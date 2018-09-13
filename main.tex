@@ -18,6 +18,7 @@
 \usepackage[utf8x]{inputenc}
 \usepackage{animate}
 \usepackage{minted}
+\usepackage{tikz}
 
 \usemintedstyle{default}
 
@@ -43,7 +44,6 @@
 
 \begin{itemize}
   \item Insert fun fact about deep learning that not everyone will know
-  \item Don't want people to tune out already
   \item We \textit{want} to be able to deploy DL on edge devices because ... but we \textit{can't} because ...
 \end{itemize}
 
@@ -71,11 +71,19 @@ Maybe a nice figure of some stuff.
 
 \begin{frame}{Parameter Redundancy}
 
+
+
 \begin{itemize}
 	\item Lucky for us... we know that the vast majority of parameters are redundant 
     \item Many different techniques for compressing networks but the effects are nontrivial
-    \item Show graph of expected speedup vs observed speedup
 \end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=10cm]{images/speedup.pdf}
+\end{figure}
+
+
 
 \end{frame}
 
@@ -438,23 +446,30 @@ Maybe a nice figure of some stuff.
 First experiment: take all of the models and apply the compression techniques to them to see their impact on accuracy.
 This is good context for the rest of the analysis.
     
-\end{frame}
-
-
-
-
-
-
-
-
-
-
-
-\begin{frame}{Experiments}
-
-Show the pareto elbows and their impact on inference time
+\begin{figure}
+    \centering
+    \includegraphics[width=11.75cm]{images/accuracies.pdf}
+\end{figure}
     
 \end{frame}
+
+
+
+
+
+
+
+
+{ % all template changes are local to this group.
+    \setbeamertemplate{navigation symbols}{}
+    \begin{frame}[plain]
+        \begin{tikzpicture}[remember picture,overlay]
+            \node[at=(current page.center)] {
+                \includegraphics[width=\paperwidth]{images/plots.pdf}
+            };
+        \end{tikzpicture}
+     \end{frame}
+}
 
 
 
@@ -488,7 +503,10 @@ Show threading MobileNet slows it down.
 
 \begin{frame}{Experiments}
     
-    Show layer by layer graph
+    \begin{figure}
+        \centering
+        \includegraphics[width=11cm]{images/mobilenet-odroid.pdf}
+    \end{figure}
     
 \end{frame}
 
@@ -496,7 +514,11 @@ Show threading MobileNet slows it down.
 \begin{frame}{Experiments}
     
     Now fix the accuracy at 90\% to make results more comparable.
-    Show the slice graph.
+    
+    \begin{figure}
+        \centering
+        \includegraphics[width=12cm]{images/accuracy.pdf}
+    \end{figure}
     
 \end{frame}
 
@@ -518,7 +540,6 @@ Show threading MobileNet slows it down.
     
 \end{frame}
 
-\end{document}
 
 
 
@@ -529,7 +550,20 @@ Show threading MobileNet slows it down.
 \begin{frame}{Conclusion}
     
     \begin{itemize}
-        \item Not always trivial
+        \item Channel pruning is the best, always
     \end{itemize}
     
 \end{frame}
+
+
+\begin{frame}{Thanks}
+    \begin{itemize}
+        \item Bonseyes
+        \item EPSRC (PPar)
+    \end{itemize}
+\end{frame}
+
+
+
+
+\end{document}
