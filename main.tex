@@ -17,6 +17,9 @@
 \usepackage[english]{babel}
 \usepackage[utf8x]{inputenc}
 \usepackage{animate}
+\usepackage{minted}
+
+\usemintedstyle{default}
 
 \title[IISWC 2018 Presentation]{Characterising Across Stack Optimisations for Deep Convolutional Neural Networks}
 \author{J. Turner, J. Cano, V. Radu, E. J. Crowley, M. O’Boyle, A. Storkey}
@@ -77,6 +80,16 @@ Maybe a nice figure of some stuff.
 \end{frame}
 
 
+\begin{frame}{Contributions}
+    
+    \begin{itemize}
+        \item Introduction of the \textit{Deep Learning Inference Stack}
+        \item Characterisation of various neural network acceleration methods on different hardware
+    \end{itemize}
+    
+\end{frame}
+
+
 \section{Background}
 
 \begin{frame}{Background: Neurons}
@@ -115,6 +128,56 @@ Maybe a nice figure of some stuff.
     \centering
     \includegraphics[width=0.6\linewidth]{images/neural_network.pdf}
 \end{figure}
+\end{frame}
+
+
+
+\begin{frame}{Background: Weight Pruning}
+
+\begin{itemize}
+    \item Pruning at the individual \textit{weight} level
+    \item Leaves weight matrices very sparse
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=8cm]{images/weight_pruning.pdf}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Background: Channel Pruning}
+
+\begin{itemize}
+    \item Pruning at the \textit{neuron} level
+    \item Leaves weight matrices small and dense
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=8cm]{images/channel_pruning.pdf}
+    \label{fig:channel_pruning}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Background: Quantisation}
+\begin{itemize}
+    \item Two options:
+    \begin{enumerate}
+        \item Reduce precision of weights
+        \item Group to small set of centroids
+    \end{enumerate}
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=5cm]{images/quantization.pdf}
+\end{figure}
+
+
 \end{frame}
 
 
@@ -160,6 +223,33 @@ Maybe a nice figure of some stuff.
 
 \end{frame}
 
+\definecolor{bg}{rgb}{0.95,0.95,0.95}
+
+\begin{frame}{Layer 1: Neural Networks}
+\vspace{0.2cm}
+
+\inputminted[bgcolor=bg, fontfamily=cmss]{python}{images/mini_model.py}
+
+\begin{figure}
+    \centering
+    \vspace{-1cm}
+    \includegraphics[width=10cm]{images/lgoos.pdf}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Layer 1: Neural Networks}
+\vspace{0.2cm}
+
+\begin{itemize}
+    \item VGG-16
+    \item MobileNet
+    \item ResNet-18
+\end{itemize}
+
+\end{frame}
+
+
 \begin{frame}{Layer 2: Compression Techniques}
 
 \begin{columns}
@@ -172,82 +262,52 @@ Maybe a nice figure of some stuff.
 
 \column{0.7\textwidth}
 
-\textbf{Weight Pruning}
-
-\begin{itemize}
-    \item Pruning at the individual \textit{weight} level
-    \item Leaves weight matrices very sparse
-\end{itemize}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=6cm]{images/weight_pruning.pdf}
-\end{figure}
+\begin{enumerate}
+    \item Weight Pruning
+    \item Channel Pruning
+    \item Quantisation
+\end{enumerate}
 
 
 \end{columns}
 
 \end{frame}
 
-\begin{frame}{Layer 2: Compression Techniques}
 
-\begin{columns}
 
-\column{0.3\textwidth}
+\begin{frame}{Layer 2: Weight Pruning}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=3.5cm]{images/compressions.pdf}
-    \label{fig:inference-stack-compress-2}
-\end{figure}
-
-\column{0.7\textwidth}
-
-\textbf{Channel Pruning}
 \begin{itemize}
-    \item Pruning at the \textit{neuron} level
-    \item Leaves matrices small and dense
+    \item Deep compression
+    \item Magnitude based thresholding 
+    \item Iterate over steps of sparsifying and retraining 
+    \item Leave the matrices very sparse but get up to 90\% compression rate
 \end{itemize}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=6cm]{images/channel_pruning.pdf}
-    \label{fig:channel_pruning}
-\end{figure}
-
-\end{columns}
-
+    
 \end{frame}
 
-\begin{frame}{Layer 2: Compression Techniques}
-\begin{columns}
 
-\column{0.3\textwidth}
-\begin{figure}
-    \centering
-    \includegraphics[width=3.5cm]{images/compressions.pdf}
-    \label{fig:inference-stack-compress-3}
-\end{figure}
-
-\column{0.7\textwidth}
-
-\textbf{Quantization}
+\begin{frame}{Layer 2: Channel Pruning}
+    
 \begin{itemize}
-    \item Two options:
-    \begin{enumerate}
-        \item Reduce precision of weights
-        \item Group to small set of centroids
-    \end{enumerate}
+    \item Fisher pruning
+    \item Taylor expansion of the objective
+    \item Weighted with a FLOP penalty $\beta$
 \end{itemize}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=5cm]{images/quantization.pdf}
-\end{figure}
-
-\end{columns}
+    
 \end{frame}
 
+
+\begin{frame}{Layer 2: Quantisation}
+\begin{itemize}
+    \item TTQ
+    \item Similar thresholding concept to weight pruning
+    \item Group to a set of three values 
+    \item Inference can be done with just these three values
+    \item Often also have some sparsity (since one of the three values is zero)
+\end{itemize}
+    
+\end{frame}
 
 
 \begin{frame}{Layer 3: Numerical Algorithms}
@@ -371,5 +431,105 @@ Maybe a nice figure of some stuff.
 
 
 
+\section{Experiments}
+
+\begin{frame}{Experiments}
+
+First experiment: take all of the models and apply the compression techniques to them to see their impact on accuracy.
+This is good context for the rest of the analysis.
+    
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+\begin{frame}{Experiments}
+
+Show the pareto elbows and their impact on inference time
+    
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+\begin{frame}{Experiments}
+    
+Show threading effect is the same on both devices 
+    
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Experiments}
+
+Show threading MobileNet slows it down.
+    
+\end{frame}
+
+
+
+\begin{frame}{Experiments}
+    
+    Show layer by layer graph
+    
+\end{frame}
+
+
+\begin{frame}{Experiments}
+    
+    Now fix the accuracy at 90\% to make results more comparable.
+    Show the slice graph.
+    
+\end{frame}
+
+
+
+
+\begin{frame}{Experiments}
+    
+    Show speed and memory requirements.
+    
+\end{frame}
+
+
+
+\begin{frame}{Experiments}
+    
+    Show GPU results.
+
+    
+\end{frame}
 
 \end{document}
+
+
+
+
+
+
+
+\begin{frame}{Conclusion}
+    
+    \begin{itemize}
+        \item Not always trivial
+    \end{itemize}
+    
+\end{frame}
