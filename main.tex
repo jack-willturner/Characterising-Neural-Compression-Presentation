@@ -22,16 +22,65 @@
 
 \usemintedstyle{default}
 
-\title[IISWC 2018 Presentation]{Characterising Across Stack Optimisations for Deep Convolutional Neural Networks}
+\newcommand{\footlineB}{
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=7ex,dp=2ex,left]{title in head/foot}%
+	\hspace{0.5cm} \vspace{-0.06cm} \includegraphics[width=.19\paperwidth]{images/edi-shield.pdf}
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=7ex,dp=2ex,left,rightskip=.3cm]{title in head/foot}%
+     \vspace{0.17cm}\hspace{-0.07cm}
+     \textsf{\fontsize{4pt}{0cm}\selectfont
+     \insertauthor  \newline 
+	 \insertshortinstitute \hfill \insertframenumber
+     }
+    \end{beamercolorbox}%
+    }%
+  \vskip0pt%
+}
+}
+
+
+\newcommand{\titlepageWhite}{ % % This block is for the white background title page
+\setbeamertemplate{footline}
+  {\hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,dp=2ex,left]{title in head/foot}%
+      %\hspace{-0.1cm} \vspace{0.52cm} 
+      
+      \vspace{-1.45cm}
+      \includegraphics[width=\paperwidth]{images/edi-shield.pdf}
+    \end{beamercolorbox}%
+      }%
+    \vskip0pt%
+  }
+\setbeamertemplate{title page}
+  { \vspace{2cm}
+  	\begin{beamercolorbox}[wd=0.9\paperwidth,dp=2ex,left]{author in head/foot}%
+    \usebeamerfont{title}{\LARGE\inserttitle\par}
+    \bigskip
+    \usebeamerfont{author}{\normalsize\insertauthor\par}
+    \smallskip
+    \bigskip
+    \usebeamerfont{date}\insertdate\par
+    \end{beamercolorbox}
+  }
+}
+
+
+\title[IISWC 2018 Presentation]{Characterising Across Stack Optimisations for Convolutional Neural Networks}
 \author{J. Turner, J. Cano, V. Radu, E. J. Crowley, M. O’Boyle, A. Storkey}
 \institute{University of Edinburgh}
 \date{}
 
 \begin{document}
 
+{\titlepageWhite
 \begin{frame}
   \titlepage
 \end{frame}
+}
 
 % Uncomment these lines for an automatically generated outline.
 %\begin{frame}{Outline}
@@ -54,6 +103,18 @@ Maybe a nice figure of some stuff.
 \end{block}
 
 \end{frame}
+
+
+\begin{frame}{Here's an ImageNet graph, sorry}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/imagenet_results.pdf}
+\end{figure}
+
+
+\end{frame}
+
 
 \section{Challenges for Deployment}
 
