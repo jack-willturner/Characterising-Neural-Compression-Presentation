@@ -1,4 +1,4 @@
-\documentclass{beamer}
+\documentclass[xcolor=dvipsnames]{beamer}
 %
 % Choose how your presentation looks.
 %
@@ -21,6 +21,10 @@
 \usepackage{tikz}
 
 \usemintedstyle{default}
+
+\definecolor{dark_blue}{RGB}{0,25,75}
+
+\setbeamercolor{frametitle}{fg=White,bg=dark_blue}
 
 \newcommand{\footlineB}{
 \setbeamertemplate{footline}
@@ -55,12 +59,15 @@
       }%
     \vskip0pt%
   }
-\setbeamertemplate{title page}
+\defbeamertemplate*{title page}{customized}[1][]
   { \vspace{2cm}
   	\begin{beamercolorbox}[wd=0.9\paperwidth,dp=2ex,left]{author in head/foot}%
-    \usebeamerfont{title}{\LARGE\inserttitle\par}
+    %\usebeamerfont{title}{\LARGE\inserttitle\par}
+    \usebeamerfont{title}\textcolor{dark_blue}{\LARGE\inserttitle}
+    \par
     \bigskip
-    \usebeamerfont{author}{\normalsize\insertauthor\par}
+    \usebeamerfont{author}\textcolor{dark_blue}{\normalsize\insertauthor.}
+    \par
     \smallskip
     \bigskip
     \usebeamerfont{date}\insertdate\par
