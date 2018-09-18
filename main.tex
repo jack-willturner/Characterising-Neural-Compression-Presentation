@@ -17,14 +17,15 @@
 \usepackage[english]{babel}
 \usepackage[utf8x]{inputenc}
 \usepackage{animate}
+\usepackage{dsfont}
 \usepackage{minted}
 \usepackage{tikz}
 
 \usemintedstyle{default}
 
 \definecolor{dark_blue}{RGB}{0,25,75}
+\setbeamercolor{frametitle}{fg=White,bg=dark_blue!80}
 
-\setbeamercolor{frametitle}{fg=White,bg=dark_blue}
 
 \newcommand{\footlineB}{
 \setbeamertemplate{footline}
@@ -63,10 +64,10 @@
   { \vspace{2cm}
   	\begin{beamercolorbox}[wd=0.9\paperwidth,dp=2ex,left]{author in head/foot}%
     %\usebeamerfont{title}{\LARGE\inserttitle\par}
-    \usebeamerfont{title}\textcolor{dark_blue}{\LARGE\inserttitle}
+    \usebeamerfont{title}\textcolor{dark_blue!90}{\LARGE\inserttitle}
     \par
     \bigskip
-    \usebeamerfont{author}\textcolor{dark_blue}{\normalsize\insertauthor.}
+    \usebeamerfont{author}\textcolor{dark_blue!90}{\normalsize\insertauthor.}
     \par
     \smallskip
     \bigskip
@@ -161,12 +162,21 @@ Maybe a nice figure of some stuff.
     \begin{itemize}
         \item Introduction of the \textit{Deep Learning Inference Stack}
         \item Characterisation of various neural network acceleration methods on different hardware
+        \item Open source minimal implementations of common neural networks for benchmarking on embedded devices\footnote{https://github.com/jack-willturner/characterising-neural-compression}
     \end{itemize}
     
 \end{frame}
 
 
 \section{Background}
+
+{
+\setbeamercolor{background canvas}{bg=dark_blue!80}
+\begin{frame}
+    \centering
+    \textcolor{white}{\LARGE Background}
+\end{frame}
+}
 
 \begin{frame}{Background: Neurons}
 
@@ -259,6 +269,14 @@ Maybe a nice figure of some stuff.
 
 \section{Inference Stack}
 
+{
+\setbeamercolor{background canvas}{bg=dark_blue!80}
+\begin{frame}
+    \centering
+    \textcolor{white}{\LARGE Experimental methodology}
+\end{frame}
+}
+
 \begin{frame}{The Deep Learning Inference Stack}
 \begin{figure}
     \centering
@@ -267,6 +285,7 @@ Maybe a nice figure of some stuff.
     \label{fig:inference-stack}
 \end{figure}
 \end{frame}
+
 
 \begin{frame}{Layer 1: Neural Networks}
 
@@ -353,36 +372,61 @@ Maybe a nice figure of some stuff.
 
 \begin{frame}{Layer 2: Weight Pruning}
 
+{\large\textbf{General Idea}}
+
 \begin{itemize}
-    \item Deep compression
     \item Magnitude based thresholding 
     \item Iterate over steps of sparsifying and retraining 
     \item Leave the matrices very sparse but get up to 90\% compression rate
 \end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/prune_retrain.pdf}
+\end{figure}
+
+{\footnotesize [Han, S., Mao, H. and Dally, W.J., 2015. Deep Compression]}
     
 \end{frame}
 
 
 \begin{frame}{Layer 2: Channel Pruning}
     
+{\large\textbf{General Idea}}
 \begin{itemize}
-    \item Fisher pruning
-    \item Taylor expansion of the objective
-    \item Weighted with a FLOP penalty $\beta$
+    \item Expand the error function into a Taylor series
+    \item Take the second derivative wrt. error (i.e. how much removing neuron $n$ will affect error $e$)
+    \item Weight with a FLOP penalty $\beta$ to bias towards removing expensive neurons
+    \item Iteratively remove neurons and retrain
 \end{itemize}
+
+If we are optimising the parameters $\theta$ for some error function $\mathcal{L}$, then removing parameter $\theta_{k}$ will change the error by:
+\begin{equation}
+    \mathcal{L}(\theta - \theta_{ke_{k}}) - \mathcal{L}(\theta) = -g_{k}\theta_{k} + \frac{1}{2}H_{kk}\theta^2_{k}
+\end{equation}
+
+{\footnotesize [Theis et. al, 2018. Faster gaze prediction with dense networks and Fisher pruning.]}
     
 \end{frame}
 
 
 \begin{frame}{Layer 2: Quantisation}
+
+
+{\large\textbf{General Idea}}
 \begin{itemize}
-    \item TTQ
-    \item Similar thresholding concept to weight pruning
-    \item Group to a set of three values 
+    \item Set three centroid values and group all of the weights to each centroid
     \item Inference can be done with just these three values
-    \item Often also have some sparsity (since one of the three values is zero)
+    \item Often also have some sparsity (since one of the three values is usually zero)
 \end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/quantization_pipeline.pdf}
+\end{figure}
     
+{\footnotesize [Zhu et. al, 2017. Trained Ternary Quantization.]}    
+
 \end{frame}
 
 
@@ -399,11 +443,35 @@ Maybe a nice figure of some stuff.
 
 \column{0.7\textwidth}
 
-\begin{itemize}
-    \item Direct convolution
-    \item \texttt{im2col}
-    \item FFT and Winograd
-\end{itemize}
+{\large Direct Convolution}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=5cm]{images/arbitrary_padding_no_strides_01.pdf}
+\end{figure}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{Layer 3: Numerical Algorithms}
+
+\begin{columns}
+
+\column{0.3\textwidth}
+\begin{figure}
+    \centering
+    \includegraphics[width=3.5cm]{images/numericals.pdf}
+    \label{fig:inference-stack-nums-2}
+\end{figure}
+
+\column{0.7\textwidth}
+
+{\large Convolution as SGEMM}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=8cm]{images/im2col.pdf}
+\end{figure}
 
 \end{columns}
 \end{frame}
@@ -418,7 +486,7 @@ Maybe a nice figure of some stuff.
 \begin{figure}
     \centering
     \includegraphics[width=3.5cm]{images/numericals.pdf}
-    \label{fig:inference-stack-nums-2}
+    \label{fig:inference-stack-nums-3}
 \end{figure}
 
 \column{0.7\textwidth}
@@ -509,14 +577,27 @@ Maybe a nice figure of some stuff.
 
 \section{Experiments}
 
+{
+\setbeamercolor{background canvas}{bg=dark_blue!80}
+\begin{frame}
+    \centering
+    \textcolor{white}{\LARGE Experiments}
+\end{frame}
+}
+
 \begin{frame}{Experiments}
 
-First experiment: take all of the models and apply the compression techniques to them to see their impact on accuracy.
-This is good context for the rest of the analysis.
+First experiment: compression vs. accuracy.
+\vspace{0.5cm}
+\begin{itemize}
+    \item Quantisation performs particularly badly on MobileNet
+    \item Weight pruning and channel pruning are roughly equivalent 
+\end{itemize}
     
+\vspace{0.5cm}
 \begin{figure}
     \centering
-    \includegraphics[width=11.75cm]{images/accuracies.pdf}
+    \includegraphics[width=\linewidth]{images/accuracies.pdf}
 \end{figure}
     
 \end{frame}
@@ -528,6 +609,9 @@ This is good context for the rest of the analysis.
 
 
 
+
+%% in case you forget, the plotting code with better colours is kept in scratchpad
+%% you need to update this before the presentation
 { % all template changes are local to this group.
     \setbeamertemplate{navigation symbols}{}
     \begin{frame}[plain]
@@ -585,7 +669,7 @@ Show threading MobileNet slows it down.
     
     \begin{figure}
         \centering
-        \includegraphics[width=12cm]{images/accuracy.pdf}
+        \includegraphics[width=\linewidth]{images/accuracy.pdf}
     \end{figure}
     
 \end{frame}
@@ -623,6 +707,15 @@ Show threading MobileNet slows it down.
     
 \end{frame}
 
+
+\begin{frame}{Further work}
+\begin{itemize}
+    \item More comprehensive benchmarking 
+    \item Sparsity for robust networks
+    \item Different sparse formats 
+    \item Tuning parameters of direct convolution and im2col
+\end{itemize}
+\end{frame}
 
 \begin{frame}{Thanks}
     \begin{itemize}
