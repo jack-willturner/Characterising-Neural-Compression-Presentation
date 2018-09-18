@@ -190,7 +190,12 @@ Maybe a nice figure of some stuff.
 
 \begin{frame}{Background: Affine Transform Neurons}
 
+Multiply each input element $x$ by a weight $w$ and add a scalar bias term $b$:
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/affine_transform.pdf}
+\end{figure}
 
 \end{frame}
 
@@ -336,11 +341,18 @@ Maybe a nice figure of some stuff.
 \begin{frame}{Layer 1: Neural Networks}
 \vspace{0.2cm}
 
-\begin{itemize}
-    \item VGG-16
-    \item MobileNet
-    \item ResNet-18
-\end{itemize}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/vgg.pdf}
+    \caption{VGG-16}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/resnet.pdf}
+    \caption{ResNet-32}
+\end{figure}
 
 \end{frame}
 
@@ -356,7 +368,7 @@ Maybe a nice figure of some stuff.
 \end{figure}
 
 \column{0.7\textwidth}
-
+We consider representatives from three different classes of compression technique:
 \begin{enumerate}
     \item Weight Pruning
     \item Channel Pruning
@@ -443,7 +455,7 @@ If we are optimising the parameters $\theta$ for some error function $\mathcal{L
 
 \column{0.7\textwidth}
 
-{\large Direct Convolution}
+{\large Direct Convolution\footnotemark}
 
 \begin{figure}
     \centering
@@ -451,6 +463,9 @@ If we are optimising the parameters $\theta$ for some error function $\mathcal{L
 \end{figure}
 
 \end{columns}
+
+\footnotetext{https://github.com/vdumoulin/conv\_arithmetic}
+
 \end{frame}
 
 \begin{frame}{Layer 3: Numerical Algorithms}
@@ -466,7 +481,7 @@ If we are optimising the parameters $\theta$ for some error function $\mathcal{L
 
 \column{0.7\textwidth}
 
-{\large Convolution as SGEMM}
+{\large Convolution as SGEMM \footnotemark}
 
 \begin{figure}
     \centering
@@ -474,6 +489,8 @@ If we are optimising the parameters $\theta$ for some error function $\mathcal{L
 \end{figure}
 
 \end{columns}
+
+\footnotetext{http://cs231n.stanford.edu/slides/2016/winter1516\_lecture11.pdf}
 \end{frame}
 
 
@@ -490,9 +507,12 @@ If we are optimising the parameters $\theta$ for some error function $\mathcal{L
 \end{figure}
 
 \column{0.7\textwidth}
-\begin{itemize}
-    \item CSR
-\end{itemize}
+When the matrices are very sparse, we may wish to use a sparse representation format: 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/CSR.pdf}
+\end{figure}
 
 \end{columns}
 \end{frame}
@@ -604,7 +624,14 @@ First experiment: compression vs. accuracy.
 
 
 
-
+\begin{frame}{Experiments}
+    
+    \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{images/mac_ops.pdf}
+    \end{figure}
+    
+\end{frame}
 
 
 
