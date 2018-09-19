@@ -97,23 +97,18 @@
 
 \section{Introduction}
 
-\begin{frame}{Deep Learning is Kinda Cool}
+\begin{frame}{Motivation}
 
 \begin{itemize}
-  \item Insert fun fact about deep learning that not everyone will know
   \item We \textit{want} to be able to deploy DL on edge devices because ... but we \textit{can't} because ...
 \end{itemize}
 
 \vskip 1cm
 
-\begin{block}{Examples}
-Maybe a nice figure of some stuff.
-\end{block}
-
 \end{frame}
 
 
-\begin{frame}{Here's an ImageNet graph, sorry}
+\begin{frame}{Why Neural Networks?}
 
 \begin{figure}
     \centering
@@ -145,6 +140,7 @@ Maybe a nice figure of some stuff.
 \begin{itemize}
 	\item Lucky for us... we know that the vast majority of parameters are redundant 
     \item Many different techniques for compressing networks but the effects are nontrivial
+    \item MACs are not a perfect proxy for inference time
 \end{itemize}
 
 \begin{figure}
@@ -178,39 +174,40 @@ Maybe a nice figure of some stuff.
 \end{frame}
 }
 
-\begin{frame}{Background: Neurons}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.8\textwidth]{images/neuron.pdf}
-\end{figure}
+%\begin{frame}{Background: Neurons}
 
-\end{frame}
+%\begin{figure}
+%    \centering
+%    \includegraphics[width=0.8\textwidth]{images/neuron.pdf}
+%\end{figure}
+
+%\end{frame}
 
 
-\begin{frame}{Background: Affine Transform Neurons}
+%\begin{frame}{Background: Affine Transform Neurons}
 
-Multiply each input element $x$ by a weight $w$ and add a scalar bias term $b$:
+%Multiply each input element $x$ by a weight $w$ and add a scalar bias term $b$:
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.8\linewidth]{images/affine_transform.pdf}
-\end{figure}
+%\begin{figure}
+%    \centering
+%    \includegraphics[width=0.8\linewidth]{images/affine_transform.pdf}
+%\end{figure}
 
-\end{frame}
+%\end{frame}
 
 \begin{frame}{Background: Convolution Neurons}
 \centering
 \animategraphics[loop,controls,width=0.6\linewidth]{1}{images/arbitrary_padding_no_strides_0}{0}{3}
 \end{frame}
 
-\begin{frame}{Background: Layers}
+%\begin{frame}{Background: Layers}
 
-\begin{figure}
-    \includegraphics[width=3cm]{images/layer.pdf}
-\end{figure}
+%\begin{figure}
+%    \includegraphics[width=3cm]{images/layer.pdf}
+%\end{figure}
 
-\end{frame}
+%\end{frame}
 
 
 \begin{frame}{Background: Neural Networks}
@@ -624,19 +621,6 @@ First experiment: compression vs. accuracy.
 
 
 
-\begin{frame}{Experiments}
-    
-    \begin{figure}
-        \centering
-        \includegraphics[width=\linewidth]{images/mac_ops.pdf}
-    \end{figure}
-    
-\end{frame}
-
-
-
-
-
 %% in case you forget, the plotting code with better colours is kept in scratchpad
 %% you need to update this before the presentation
 { % all template changes are local to this group.
@@ -684,7 +668,7 @@ Show threading MobileNet slows it down.
     
     \begin{figure}
         \centering
-        \includegraphics[width=11cm]{images/mobilenet-odroid.pdf}
+        \includegraphics[width=10cm]{images/mobilenet-odroid.pdf}
     \end{figure}
     
 \end{frame}
@@ -697,6 +681,7 @@ Show threading MobileNet slows it down.
     \begin{figure}
         \centering
         \includegraphics[width=\linewidth]{images/accuracy.pdf}
+        \caption{Slicing the accuracy of each model at 90\%. (a) shows weight pruning, (b) shows channel pruning, (c) shows quantisation.}
     \end{figure}
     
 \end{frame}
@@ -705,17 +690,25 @@ Show threading MobileNet slows it down.
 
 
 \begin{frame}{Experiments}
-    
-    Show speed and memory requirements.
-    
+    \begin{figure}
+        \centering
+        \includegraphics[width=5cm]{images/inf-mem.pdf}
+        \caption{Inference time with the maximum number of threads on the Odroid and Intel when sliced at 90\% accuracy.}
+        \label{fig:inf-mem}
+    \end{figure}
 \end{frame}
 
 
 
 \begin{frame}{Experiments}
     
-    Show GPU results.
 
+    \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{images/Odroid-GPU.pdf}
+        \caption{Parallelising each network on the CPU and GPU of the Odroid board.}
+        \label{fig:odroid-gpu}
+    \end{figure}
     
 \end{frame}
 
