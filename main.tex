@@ -20,7 +20,7 @@
 \usepackage{dsfont}
 \usepackage{minted}
 \usepackage{tikz}
-
+\usepackage{listings}
 \usemintedstyle{default}
 
 \definecolor{dark_blue}{RGB}{0,25,75}
@@ -85,7 +85,7 @@
 
 
 \title[IISWC 2018 Presentation]{Characterising Across-Stack Optimisations for Convolutional Neural Networks}
-\author{\underline{J. Turner}, J. Cano, V. Radu, E. J. Crowley, M. O’Boyle, A. Storkey}
+\author{\textbf{J. Turner}, J. Cano, V. Radu, E. J. Crowley, M. O’Boyle, A. Storkey}
 \institute{University of Edinburgh}
 \date{}
 
@@ -102,17 +102,10 @@
 %  \tableofcontents
 %\end{frame}
 
-\begin{frame}{Thanks}
-    \begin{itemize}
-        \item Bonseyes
-        \item EPSRC (PPar)
-    \end{itemize}
-\end{frame}
-
 
 \section{Introduction}
 
-\begin{frame}{Neural Networks are large, and growing}
+\begin{frame}{Networks are large, and growing}
 
 \begin{columns}
 
@@ -177,10 +170,10 @@
 
 \begin{figure}
     \centering
-    \includegraphics{images/pareto_efficiency.pdf}
+    \includegraphics[width=0.6\linewidth]{images/pareto_efficiency.pdf}
 \end{figure}
 
-[DPP-Net]
+[Dong et. al, 2018. DPP-Net: Device-aware Progressive Search for Pareto-optimal Neural Architectures]
 \end{frame}
 
 
@@ -188,7 +181,6 @@
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{images/inference-stack.pdf}
-    \caption{The Deep Learning Inference Stack}
 \end{figure}
 \end{frame}
 
@@ -293,7 +285,7 @@
     \item Two options:
     \begin{enumerate}
         \item Reduce precision of weights
-        \item Group to small set of centroids
+        \item \textbf{Group to small set of centroids}
     \end{enumerate}
 \end{itemize}
 
@@ -319,8 +311,22 @@
 
 \begin{frame}{CIFAR-10}
 
-Picture / description of CIFAR-10 will go here.
+\begin{columns}
+\column{0.5\textwidth}
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{images/cifar.jpg}
+\end{figure}
 
+\column{0.5\textwidth}
+
+\begin{itemize}
+    \item $32 \times 32$ pixel images
+    \item 10 classes
+    \item 50,000 training images, 10,000 test images
+\end{itemize}
+
+\end{columns}
 \end{frame}
 
 
@@ -478,6 +484,15 @@ We consider representatives from three different classes of compression techniqu
 \end{frame}
 
 
+\begin{frame}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\linewidth]{images/numericals.pdf}
+\end{figure}
+    
+\end{frame}
+
 \begin{frame}{Layer 3: Numerical Algorithms}
 
 \begin{columns}
@@ -530,7 +545,7 @@ We consider representatives from three different classes of compression techniqu
 \end{frame}
 
 
-\begin{frame}{Layer 3: Numerical Algorithms}
+\begin{frame}{Compressed Sparse Row (CSR) Format}
 
 \begin{columns}
 
@@ -553,29 +568,29 @@ When the matrices are very sparse, we may wish to use a sparse representation fo
 \end{columns}
 \end{frame}
 
-\begin{frame}{Layer 4: Parallelisation Techniques}
+\begin{frame}
 
-\begin{columns}
-
-
-\column{0.3\textwidth}
 \begin{figure}
     \centering
-    \includegraphics[width=3.5cm]{images/parallelisations.pdf}
-    \label{fig:inference-stack-parallels}
+    \includegraphics[width=0.6\linewidth]{images/parallelisations.pdf}
 \end{figure}
+\end{frame}
 
-\column{0.7\textwidth}
 
-\textbf{OpenMP}
-\begin{itemize}
-    \item CPU parallelisation of direct convolution 
-    \item Code snippet w. pragmas will go here
-\end{itemize}
+\begin{frame}[fragile]{OpenMP Parallelisation}
 
-\end{columns}
+\begin{lstlisting}[language=C, columns=fullflexible]
+#pragma omp parallel for schedule(dynamic,1) num_threads(t)
+for (i = 0; i < out_planes; i++) {
+	for (j = 0; j < in_planes; j++) {
+		convolution_3_x_3(inputs[j], weights[layer][i][j]);
+	}
+}
+\end{lstlisting}
+
 
 \end{frame}
+
 
 
 \begin{frame}{Layer 4: Parallelisation Techniques}
@@ -594,7 +609,7 @@ When the matrices are very sparse, we may wish to use a sparse representation fo
 
 \textbf{OpenCL}
 \begin{itemize}
-    \item Hand tuned work groups and tiling
+    \item Hand tuned work groups, tiling and register blocking
     \item CLBlast Autotuning 
 \end{itemize}
 
@@ -602,7 +617,13 @@ When the matrices are very sparse, we may wish to use a sparse representation fo
 
 \end{frame}
 
+\begin{frame}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\linewidth]{images/hardwares.pdf}
+\end{figure}
+\end{frame}
 
 \begin{frame}{Layer 5: Hardware}
 
@@ -617,9 +638,15 @@ When the matrices are very sparse, we may wish to use a sparse representation fo
 
 \column{0.7\textwidth}
 
+Desktop compute:
 \begin{itemize}
-    \item Intel Core i7 (4 cores)
-    \item Odroid-XU4 (ARM big.LITTLE CPU (8 cores) + Mali T628 GPU (6 cores)
+    \item Intel Core i7 (4 cores) w. 8GB RAM
+\end{itemize}
+
+\vspace{0.5cm}
+Embedded heterogeneous hardware:
+\begin{itemize}
+    \item Odroid-XU4 (ARM big.LITTLE CPU (8 cores) + Mali T628 GPU (6 cores) w. 2GB RAM
 \end{itemize}
 \end{columns}
 
@@ -654,9 +681,48 @@ When the matrices are very sparse, we may wish to use a sparse representation fo
     
 \end{frame}
 
+\begin{frame}{Impact of Compression on Memory Footprint}
+    
+\begin{table}[h]
+\begin{center}
+
+%\vspace{-0.2cm}
+\begin{tabular}{ |c|c|c|c|c| } \hline
+Model&Plain&W. Pruning &C.~Pruning&T. Quantis.\\ \hline \hline
+VGG-16 	  &	309.9	& 112.2	& 74.9	& 114.1 \\ \hline
+ResNet-18 &	233.8	& 66.1	& {\color{red}\textbf{13.1}}	& 66.9 \\ \hline
+MobileNet & {\color{red}\textbf{66.3}} & 40.9	& 2.7	& 63.3 \\ \hline
+\end{tabular}
+%\vspace{-0.8cm}
+\label{table:mem-90}
+\end{center}
+\end{table}
+
+\end{frame}
+
+\begin{frame}{Impact of Compression on Memory Footprint}
+    
+\begin{table}[h]
+\begin{center}
+
+%\vspace{-0.2cm}
+\begin{tabular}{ |c|c|c|c|c| } \hline
+Model&Plain&W. Pruning &C.~Pruning&T. Quantis.\\ \hline \hline
+VGG-16 	  &	309.9	& 112.2	& 74.9	& 114.1 \\ \hline
+ResNet-18 &	233.8	& 66.1	& 13.1	& 66.9 \\ \hline
+MobileNet & 66.3 & 40.9	& {\color{red}\textbf{2.7}}	& 63.3 \\ \hline
+\end{tabular}
+%\vspace{-0.8cm}
+\label{table:mem-90}
+\end{center}
+\end{table}
+
+\end{frame}
 
 
-\begin{frame}{Impact of Compression on Speed}
+\begin{frame}{Impact of Compression on Inference Speed}
+    
+    VGG-16:
     
     \begin{figure}
         \centering
@@ -665,17 +731,26 @@ When the matrices are very sparse, we may wish to use a sparse representation fo
 \end{frame}
 
 
-
-
-
-\begin{frame}{Experiments}
-
+\begin{frame}{Impact of Compression on Inference Speed}
+ResNet-18:
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{images/last_two.pdf}
+    \includegraphics[width=\linewidth]{images/resnet_speedup.pdf}
 \end{figure}
-    
 \end{frame}
+
+
+\begin{frame}{Impact of Compression on Inference Speed}
+MobileNet:
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/mobilenet_speedup.pdf}
+\end{figure}
+\end{frame}
+
+
+
+
 
 
 
@@ -689,14 +764,14 @@ When the matrices are very sparse, we may wish to use a sparse representation fo
 \end{frame}
 
 
-\begin{frame}{Experiments}
+\begin{frame}{Fixing Accuracy}
     
     Now fix the accuracy at 90\% to make results more comparable.
     
     \begin{figure}
         \centering
         \includegraphics[width=\linewidth]{images/accuracy.pdf}
-        \caption{Slicing the accuracy of each model at 90\%. (a) shows weight pruning, (b) shows channel pruning, (c) shows quantisation.}
+        \caption{(a) Weight Pruning (b) Channel Pruning (c) Quantisation}
     \end{figure}
     
 \end{frame}
@@ -704,17 +779,31 @@ When the matrices are very sparse, we may wish to use a sparse representation fo
 
 
 
-\begin{frame}{Experiments}
+\begin{frame}{Comparison at Fixed Accuracy}
     \begin{figure}
         \centering
         \includegraphics[width=\linewidth]{images/inf-mem2.pdf}
-        \caption{Inference time with the maximum number of threads on the Odroid and Intel when sliced at 90\% accuracy.}
         \label{fig:inf-mem}
     \end{figure}
 \end{frame}
 
-\begin{frame}{Parallelisation on ARM Mali GPU}
+
+\begin{frame}{Acceleration on the Odroid}
     
+VGG-16 can run faster than MobileNet on an embedded device for the same accuracy using channel pruning:
+    
+\begin{center}
+    \begin{tabular}{c|c|c|c}
+         Model & Accuracy & Size & Speed \\
+         \hline
+         MobileNet Plain  & 90\% & \textbf{66.3MB}  & 0.6s \\
+         VGG-16 C. Pruned & 90\% & 74.9MB  & \textbf{0.4s}\\
+    \end{tabular}
+\end{center}
+  
+\end{frame}
+
+\begin{frame}{Parallelisation on ARM Mali GPU}
 
     \begin{figure}
         \centering
@@ -735,10 +824,5 @@ When the matrices are very sparse, we may wish to use a sparse representation fo
     \end{itemize}
     
 \end{frame}
-
-
-
-
-
 
 \end{document}
